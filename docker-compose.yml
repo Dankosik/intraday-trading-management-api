@@ -1,0 +1,20 @@
+version: "3.8"
+services:
+  mongodb:
+    image: mongo
+    container_name: intraday-trading-management-api-database
+    ports:
+      - 27017:27017
+    volumes:
+      - data:/data
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=user
+      - MONGO_INITDB_ROOT_PASSWORD=password
+      - MONGO_INITDB_DATABASE=$MONGO_DB
+      - MONGO_DB_USERNAME=$MONGO_DB_USERNAME
+      - MONGO_DB_PASSWORD=$MONGO_DB_PASSWORD
+networks:
+  default:
+    name: mongob_network
+volumes:
+  data: { }
