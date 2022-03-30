@@ -21,7 +21,7 @@ class DealController(
     fun getDealById(@PathVariable id: String): Deal = dealService.getDealById(id)
 
     @GetMapping
-    fun getDealsByDate(
+    fun getDeals(
         @RequestParam customQuery: Map<String, String>
     ): List<Deal> {
         if (customQuery.isEmpty()) {
