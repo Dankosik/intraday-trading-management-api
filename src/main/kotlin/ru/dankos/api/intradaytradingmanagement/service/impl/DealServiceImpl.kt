@@ -41,8 +41,8 @@ class DealServiceImpl(
             //todo move strings to enum
             when (it.key) {
                 "companyName" -> return getDealsByCompanyName(it.value)
-                "ticker" -> return getDealsByCompanyName(it.value)
-                "date" -> return getDealsByCompanyName(it.value)
+                "ticker" -> return getDealsByTicker(it.value)
+                "date" -> return getDealsByDate(LocalDate.parse(it.value))
             }
         }
         throw ServiceException("Not supported query parameter")
