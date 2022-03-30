@@ -23,12 +23,9 @@ class DealController(
     @GetMapping
     fun getDeals(
         @RequestParam customQuery: Map<String, String>
-    ): List<Deal> {
-        if (customQuery.isEmpty()) {
-            return dealService.getAllDeals()
-        }
-        return dealService.getDealsByCustomQuery(customQuery)
-    }
+    ): List<Deal> = if (customQuery.isEmpty()) {
+        dealService.getAllDeals()
+    } else dealService.getDealsByCustomQuery(customQuery)
 
     @PostMapping
     fun createDeal(@RequestBody deal: Deal): Deal = dealService.createDeal(deal)
