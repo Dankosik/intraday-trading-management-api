@@ -8,9 +8,9 @@ import java.time.LocalDate
 data class Deal(
     @Id
     val id: String? = null,
-    val date: LocalDate,
-    val ticker: String,
-    val companyName: String,
-    val purchaseAmount: Amount,
-    val saleAmount: Amount,
+    var date: LocalDate,
+    var ticker: String,
+    var companyName: String,
+    var purchaseAmount: Amount,
+    var saleAmount: Amount
 )

@@ -3,11 +3,13 @@ package ru.dankos.api.intradaytradingmanagement.controller
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import ru.dankos.api.intradaytradingmanagement.controller.DealController.Companion.ROOT_PATH
+import ru.dankos.api.intradaytradingmanagement.dto.DealRequest
 import ru.dankos.api.intradaytradingmanagement.model.Deal
 import ru.dankos.api.intradaytradingmanagement.service.DealService
 
@@ -28,7 +30,10 @@ class DealController(
     } else dealService.getDealsByCustomQuery(customQuery)
 
     @PostMapping
-    fun createDeal(@RequestBody deal: Deal): Deal = dealService.createDeal(deal)
+    fun createDeal(@RequestBody deal: DealRequest): Deal = dealService.createDeal(deal)
+
+    @PutMapping("{id}")
+    fun updateDeal(@PathVariable id: String, @RequestBody deal: DealRequest): Deal = dealService.updateDeal(id, deal)
 
     companion object {
         const val ROOT_PATH = "/deals"
