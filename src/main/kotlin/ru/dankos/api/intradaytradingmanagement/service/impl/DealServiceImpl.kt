@@ -29,7 +29,7 @@ class DealServiceImpl(
     }
 
     override fun getDealsByCompanyName(companyName: String): List<Deal> {
-        TODO("Not yet implemented")
+        return dealRepository.findDealsByCompanyName(companyName)
     }
 
     override fun createDeal(deal: Deal): Deal {
@@ -37,6 +37,7 @@ class DealServiceImpl(
     }
 
     override fun getDealsByCustomQuery(customQuery: Map<String, String>): List<Deal> {
+        if (customQuery.size > 1) throw ServiceException("Supported query parameter`s number is 1")
         customQuery.entries.forEach {
             //todo move strings to enum
             when (it.key) {
