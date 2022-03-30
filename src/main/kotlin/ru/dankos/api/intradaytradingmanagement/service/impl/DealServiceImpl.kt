@@ -37,7 +37,7 @@ class DealServiceImpl(
     }
 
     override fun getDealsByCustomQuery(customQuery: Map<String, String>): List<Deal> {
-        if (customQuery.size > 1) throw ServiceException("Supported query parameter`s number is 1")
+        if (customQuery.size > 1) throw ServiceException("Supported number of query parameters: 1")
         customQuery.entries.forEach {
             //todo move strings to enum
             when (it.key) {
