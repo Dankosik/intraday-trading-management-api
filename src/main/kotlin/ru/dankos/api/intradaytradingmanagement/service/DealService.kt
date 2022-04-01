@@ -11,6 +11,6 @@ interface DealService {
     fun getDealsByTicker(ticker: String): List<Deal>
     fun createDeal(dealRequest: DealRequest): Deal
     fun updateDeal(id: String, dealRequest: DealRequest): Deal
-    fun getDealsByCustomQuery(customQuery: Map<String, String>): List<Deal>
+    fun getDealsWithQueryParams(queryParams: Map<String, String>): List<Deal>
     fun getDealsByCompanyName(companyName: String): List<Deal>
 }

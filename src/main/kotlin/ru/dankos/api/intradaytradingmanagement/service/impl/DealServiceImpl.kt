@@ -1,6 +1,7 @@
 package ru.dankos.api.intradaytradingmanagement.service.impl
 
 import org.springframework.stereotype.Service
+import ru.dankos.api.intradaytradingmanagement.controller.queryparams.DealQueryParams
 import ru.dankos.api.intradaytradingmanagement.dto.DealRequest
 import ru.dankos.api.intradaytradingmanagement.model.Deal
 import ru.dankos.api.intradaytradingmanagement.repository.DealRepository
@@ -50,17 +51,16 @@ class DealServiceImpl(
         )
     }
 
-    override fun getDealsByCustomQuery(customQuery: Map<String, String>): List<Deal> {
-        if (customQuery.size > 1) throw ServiceException("Supported number of query parameters: 1")
-        customQuery.entries.forEach {
-            //todo move strings to enum
+    override fun getDealsWithQueryParams(queryParams: Map<String, String>): List<Deal> {
+        if (queryParams.size > 1) throw ServiceException("Supported number of query parameters: 1")
+        queryParams.entries.forEach {
             when (it.key) {
-                "companyName" -> return getDealsByCompanyName(it.value)
-                "ticker" -> return getDealsByTicker(it.value)
-                "date" -> return getDealsByDate(LocalDate.parse(it.value))
+                DealQueryParams.COMPANY_NAME.value -> return getDealsByCompanyName(it.value)
+                DealQueryParams.TICKER.value -> return getDealsByTicker(it.value)
+                DealQueryParams.DATE.value -> return getDealsByDate(LocalDate.parse(it.value))
             }
         }
-        throw ServiceException("Not supported query parameter: ${customQuery.keys}")
+        throw ServiceException("Not supported query parameter: ${queryParams.keys}")
     }
 }
 
