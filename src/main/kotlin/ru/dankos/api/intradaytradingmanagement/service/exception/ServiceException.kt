@@ -1,3 +1,3 @@
 package ru.dankos.api.intradaytradingmanagement.service.exception
 
-class ServiceException(message: String?) : RuntimeException(message)
+open class ServiceException(message: String) : RuntimeException(message)
