@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
+import ru.dankos.api.intradaytradingmanagement.service.exception.EntityNotFoundException
 import ru.dankos.api.intradaytradingmanagement.service.exception.NotSupportedNumberQueryParamException
 import ru.dankos.api.intradaytradingmanagement.service.exception.NotSupportedQueryParamException
 import ru.dankos.api.intradaytradingmanagement.service.exception.ServiceException
@@ -25,6 +26,13 @@ class GenericExceptionHandler {
         ResponseEntity<ErrorResponse>(
             buildErrorResponse(exception, HttpStatus.BAD_REQUEST),
             HttpStatus.BAD_REQUEST
+        )
+
+    @ExceptionHandler(value = [EntityNotFoundException::class])
+    protected fun handleEntityNotFoundException(exception: EntityNotFoundException) =
+        ResponseEntity<ErrorResponse>(
+            buildErrorResponse(exception, HttpStatus.NOT_FOUND),
+            HttpStatus.NOT_FOUND
         )
 
     private fun buildErrorResponse(exception: ServiceException, httpStatus: HttpStatus): ErrorResponse = ErrorResponse(
