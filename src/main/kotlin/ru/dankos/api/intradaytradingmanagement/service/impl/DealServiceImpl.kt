@@ -6,7 +6,9 @@ import ru.dankos.api.intradaytradingmanagement.dto.DealRequest
 import ru.dankos.api.intradaytradingmanagement.model.Deal
 import ru.dankos.api.intradaytradingmanagement.repository.DealRepository
 import ru.dankos.api.intradaytradingmanagement.service.DealService
-import ru.dankos.api.intradaytradingmanagement.service.exception.ServiceException
+import ru.dankos.api.intradaytradingmanagement.service.exception.EntityNotFoundException
+import ru.dankos.api.intradaytradingmanagement.service.exception.NotSupportedNumberQueryParamException
+import ru.dankos.api.intradaytradingmanagement.service.exception.NotSupportedQueryParamException
 import java.time.LocalDate
 
 @Service
@@ -19,7 +21,7 @@ class DealServiceImpl(
     }
 
     override fun getDealById(id: String): Deal {
-        return dealRepository.findById(id).orElseThrow { ServiceException("The Deal with id: $id is not found") }
+        return dealRepository.findById(id).orElseThrow { EntityNotFoundException("The Deal with id: $id is not found") }
     }
 
     override fun getAllDeals(): List<Deal> {
@@ -52,7 +54,7 @@ class DealServiceImpl(
     }
 
     override fun getDealsWithQueryParams(queryParams: Map<String, String>): List<Deal> {
-        if (queryParams.size > 1) throw ServiceException("Supported number of query parameters: 1")
+        if (queryParams.size > 1) throw NotSupportedNumberQueryParamException("Supported number of query parameters: 1")
         queryParams.entries.forEach {
             when (it.key) {
                 DealQueryParams.COMPANY_NAME.value -> return getDealsByCompanyName(it.value)
@@ -60,7 +62,7 @@ class DealServiceImpl(
                 DealQueryParams.DATE.value -> return getDealsByDate(LocalDate.parse(it.value))
             }
         }
-        throw ServiceException("Not supported query parameter: ${queryParams.keys}")
+        throw NotSupportedQueryParamException("Not supported query parameter: ${queryParams.keys}")
     }
 }
 
