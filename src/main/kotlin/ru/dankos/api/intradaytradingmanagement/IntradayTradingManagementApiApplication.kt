@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class IntradayTradingManagementApiApplication
 
 fun main(args: Array<String>) {
-    runApplication<IntradayTradingManagementApiApplication>(*args)
+    runApplication<IntradayTradingManagementApiApplication>(args = args)
 }

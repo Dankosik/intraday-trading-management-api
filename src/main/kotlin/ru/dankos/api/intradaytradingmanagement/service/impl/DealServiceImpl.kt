@@ -55,14 +55,15 @@ class DealServiceImpl(
 
     override fun getDealsWithQueryParams(queryParams: Map<String, String>): List<Deal> {
         if (queryParams.size > 1) throw NotSupportedNumberQueryParamException("Supported number of query parameters: 1")
-        queryParams.entries.forEach {
-            when (it.key) {
-                DealQueryParams.COMPANY_NAME.value -> return getDealsByCompanyName(it.value)
-                DealQueryParams.TICKER.value -> return getDealsByTicker(it.value)
-                DealQueryParams.DATE.value -> return getDealsByDate(LocalDate.parse(it.value))
+        return queryParams.entries.first()
+            .let {
+                when (it.key) {
+                    DealQueryParams.COMPANY_NAME.value -> getDealsByCompanyName(it.value)
+                    DealQueryParams.TICKER.value -> getDealsByTicker(it.value)
+                    DealQueryParams.DATE.value -> getDealsByDate(LocalDate.parse(it.value))
+                    else -> throw NotSupportedQueryParamException("Not supported query parameter: ${queryParams.keys}")
+                }
             }
-        }
-        throw NotSupportedQueryParamException("Not supported query parameter: ${queryParams.keys}")
     }
 }
 

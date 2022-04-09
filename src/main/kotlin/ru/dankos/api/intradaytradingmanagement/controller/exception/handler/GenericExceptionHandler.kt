@@ -15,21 +15,21 @@ import java.util.*
 class GenericExceptionHandler {
 
     @ExceptionHandler(value = [ServiceException::class])
-    protected fun handleServiceException(exception: ServiceException) =
+    internal fun handleServiceException(exception: ServiceException) =
         ResponseEntity<ErrorResponse>(
             buildErrorResponse(exception, HttpStatus.INTERNAL_SERVER_ERROR),
             HttpStatus.INTERNAL_SERVER_ERROR
         )
 
     @ExceptionHandler(value = [NotSupportedNumberQueryParamException::class, NotSupportedQueryParamException::class])
-    protected fun handleNotSupportedQueryParamException(exception: ServiceException) =
+    internal fun handleNotSupportedQueryParamException(exception: ServiceException) =
         ResponseEntity<ErrorResponse>(
             buildErrorResponse(exception, HttpStatus.BAD_REQUEST),
             HttpStatus.BAD_REQUEST
         )
 
     @ExceptionHandler(value = [EntityNotFoundException::class])
-    protected fun handleEntityNotFoundException(exception: EntityNotFoundException) =
+    internal fun handleEntityNotFoundException(exception: EntityNotFoundException) =
         ResponseEntity<ErrorResponse>(
             buildErrorResponse(exception, HttpStatus.NOT_FOUND),
             HttpStatus.NOT_FOUND
