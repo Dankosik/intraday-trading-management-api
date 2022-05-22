@@ -11,7 +11,8 @@ import org.springframework.web.bind.annotation.RestController
 import ru.dankos.api.intradaytradingmanagement.controller.DealController.Companion.ROOT_PATH
 import ru.dankos.api.intradaytradingmanagement.dto.DealRequest
 import ru.dankos.api.intradaytradingmanagement.dto.DealResponse
-import ru.dankos.api.intradaytradingmanagement.service.impl.DealService
+import ru.dankos.api.intradaytradingmanagement.dto.DealsRequest
+import ru.dankos.api.intradaytradingmanagement.service.DealService
 
 @RestController
 @RequestMapping(ROOT_PATH)
@@ -24,10 +25,16 @@ class DealController(
 
     @GetMapping
     fun getDeals(
-        @RequestParam queryParams: Map<String, String>
-    ): List<DealResponse> = if (queryParams.isEmpty()) {
-        dealService.getAllDeals()
-    } else dealService.getDealsWithQueryParams(queryParams)
+        @RequestParam(required = false) companyName: String?,
+        @RequestParam(required = false) ticker: String?,
+        @RequestParam(required = false) date: String?,
+    ): List<DealResponse> = dealService.getDeals(
+        DealsRequest(
+            companyName = companyName,
+            date = date,
+            ticker = ticker
+        )
+    )
 
     @PostMapping
     fun createDeal(@RequestBody deal: DealRequest): DealResponse = dealService.createDeal(deal)
@@ -37,6 +44,7 @@ class DealController(
         dealService.updateDeal(id, deal)
 
     companion object {
+
         const val ROOT_PATH = "/deals"
     }
 }

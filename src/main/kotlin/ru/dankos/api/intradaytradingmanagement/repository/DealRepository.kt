@@ -8,4 +8,6 @@ interface DealRepository : MongoRepository<Deal, String> {
     fun findDealsByDate(date: LocalDateTime): List<Deal>
     fun findDealsByTicker(ticker: String): List<Deal>
     fun findDealsByCompanyName(companyName: String): List<Deal>
+    fun findDealsByCompanyNameAndDate(companyName: String, date: LocalDateTime): List<Deal>
+    fun findDealsByTickerAndDate(ticker: String, date: LocalDateTime): List<Deal>
 }
