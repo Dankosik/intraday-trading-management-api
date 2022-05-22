@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import ru.dankos.api.intradaytradingmanagement.controller.DealController.Companion.ROOT_PATH
 import ru.dankos.api.intradaytradingmanagement.dto.DealRequest
-import ru.dankos.api.intradaytradingmanagement.model.Deal
-import ru.dankos.api.intradaytradingmanagement.service.DealService
+import ru.dankos.api.intradaytradingmanagement.dto.DealResponse
+import ru.dankos.api.intradaytradingmanagement.service.impl.DealService
 
 @RestController
 @RequestMapping(ROOT_PATH)
@@ -20,20 +20,21 @@ class DealController(
 ) {
 
     @GetMapping("/{id}")
-    fun getDealById(@PathVariable id: String): Deal = dealService.getDealById(id)
+    fun getDealById(@PathVariable id: String): DealResponse = dealService.getDealById(id)
 
     @GetMapping
     fun getDeals(
         @RequestParam queryParams: Map<String, String>
-    ): List<Deal> = if (queryParams.isEmpty()) {
+    ): List<DealResponse> = if (queryParams.isEmpty()) {
         dealService.getAllDeals()
     } else dealService.getDealsWithQueryParams(queryParams)
 
     @PostMapping
-    fun createDeal(@RequestBody deal: DealRequest): Deal = dealService.createDeal(deal)
+    fun createDeal(@RequestBody deal: DealRequest): DealResponse = dealService.createDeal(deal)
 
     @PutMapping("{id}")
-    fun updateDeal(@PathVariable id: String, @RequestBody deal: DealRequest): Deal = dealService.updateDeal(id, deal)
+    fun updateDeal(@PathVariable id: String, @RequestBody deal: DealRequest): DealResponse =
+        dealService.updateDeal(id, deal)
 
     companion object {
         const val ROOT_PATH = "/deals"

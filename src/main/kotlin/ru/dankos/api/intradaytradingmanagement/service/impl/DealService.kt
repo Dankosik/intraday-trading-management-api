@@ -3,45 +3,39 @@ package ru.dankos.api.intradaytradingmanagement.service.impl
 import org.springframework.stereotype.Service
 import ru.dankos.api.intradaytradingmanagement.controller.queryparams.DealQueryParams
 import ru.dankos.api.intradaytradingmanagement.dto.DealRequest
+import ru.dankos.api.intradaytradingmanagement.dto.DealResponse
 import ru.dankos.api.intradaytradingmanagement.model.Deal
 import ru.dankos.api.intradaytradingmanagement.repository.DealRepository
-import ru.dankos.api.intradaytradingmanagement.service.DealService
 import ru.dankos.api.intradaytradingmanagement.service.exception.EntityNotFoundException
 import ru.dankos.api.intradaytradingmanagement.service.exception.NotSupportedNumberQueryParamException
 import ru.dankos.api.intradaytradingmanagement.service.exception.NotSupportedQueryParamException
 import java.time.LocalDate
 
 @Service
-class DealServiceImpl(
+class DealService(
     val dealRepository: DealRepository
-) : DealService {
+) {
 
-    override fun getDealsByDate(date: LocalDate): List<Deal> {
-        return dealRepository.findDealsByDate(date)
-    }
+    fun getDealsByDate(date: LocalDate): List<DealResponse> =
+        dealRepository.findDealsByDate(date.atStartOfDay()).map { it.toDealResponse() }
 
-    override fun getDealById(id: String): Deal {
-        return dealRepository.findById(id).orElseThrow { EntityNotFoundException("The Deal with id: $id is not found") }
-    }
+    fun getDealById(id: String): DealResponse = dealRepository.findById(id).map { it.toDealResponse() }
+        .orElseThrow { EntityNotFoundException("The Deal with id: $id is not found") }
 
-    override fun getAllDeals(): List<Deal> {
-        return dealRepository.findAll()
-    }
+    fun getAllDeals(): List<DealResponse> = dealRepository.findAll().map { it.toDealResponse() }
 
-    override fun getDealsByTicker(ticker: String): List<Deal> {
-        return dealRepository.findDealsByTicker(ticker)
-    }
+    fun getDealsByTicker(ticker: String): List<DealResponse> =
+        dealRepository.findDealsByTicker(ticker).map { it.toDealResponse() }
 
-    override fun getDealsByCompanyName(companyName: String): List<Deal> {
-        return dealRepository.findDealsByCompanyName(companyName)
-    }
+    fun getDealsByCompanyName(companyName: String): List<DealResponse> =
+        dealRepository.findDealsByCompanyName(companyName).map { it.toDealResponse() }
 
-    override fun createDeal(dealRequest: DealRequest): Deal {
-        return dealRepository.save(dealRequest.toEntity())
-    }
+    fun createDeal(dealRequest: DealRequest): DealResponse =
+        dealRepository.save(dealRequest.toEntity()).toDealResponse()
 
-    override fun updateDeal(id: String, dealRequest: DealRequest): Deal {
-        val foundDeal = getDealById(id)
+    fun updateDeal(id: String, dealRequest: DealRequest): DealResponse {
+        val foundDeal = dealRepository.findById(id)
+            .orElseThrow { EntityNotFoundException("The Deal with id: $id is not found") }
         return dealRepository.save(
             foundDeal.apply {
                 date = dealRequest.date
@@ -50,11 +44,13 @@ class DealServiceImpl(
                 purchaseAmount = dealRequest.purchaseAmount
                 saleAmount = dealRequest.saleAmount
             }
-        )
+        ).toDealResponse()
     }
 
-    override fun getDealsWithQueryParams(queryParams: Map<String, String>): List<Deal> {
-        if (queryParams.size > 1) throw NotSupportedNumberQueryParamException("Supported number of query parameters: 1")
+    fun getDealsWithQueryParams(queryParams: Map<String, String>): List<DealResponse> {
+        if (queryParams.size > 1) throw NotSupportedNumberQueryParamException(
+            "Supported number of query parameters: '1', but actual is: '${queryParams.size}'"
+        )
         return queryParams.entries.first()
             .let {
                 when (it.key) {
@@ -68,6 +64,15 @@ class DealServiceImpl(
 }
 
 private fun DealRequest.toEntity(): Deal = Deal(
+    date = this.date,
+    ticker = this.ticker,
+    companyName = this.companyName,
+    purchaseAmount = this.purchaseAmount,
+    saleAmount = this.saleAmount,
+)
+
+private fun Deal.toDealResponse(): DealResponse = DealResponse(
+    id = this.id ?: "",
     date = this.date,
     ticker = this.ticker,
     companyName = this.companyName,
